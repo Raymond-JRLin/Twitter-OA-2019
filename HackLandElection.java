@@ -5,7 +5,7 @@ public class HackLandElection {
     private static String electionWinner(String[] names) {
         Map<String, Integer> map = new HashMap<>(); // <name, frequency>
         for (String name : names) {
-            map.put(name, map.getOrDefault(name, 1) + 1);
+            map.put(name, map.getOrDefault(name, 0) + 1);
         }
 
         PriorityQueue<Candidate> pq = new PriorityQueue<>();
