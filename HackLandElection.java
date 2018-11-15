@@ -1,4 +1,7 @@
+import java.util.*;
+
 public class HackLandElection {
+
     private static String electionWinner(String[] names) {
         Map<String, Integer> map = new HashMap<>(); // <name, frequency>
         for (String name : names) {
