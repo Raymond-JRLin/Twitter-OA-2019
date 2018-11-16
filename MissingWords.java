@@ -8,7 +8,7 @@ public class MissingWords {
         int j = 0;
         List<String> result = new ArrayList<>();
         while (j < tar.length) {
-            // problem contrains t is a subsequence of s
+            // problem constraints t is a subsequence of s
             if (src[i].equals(tar[j])) {
                 i++;
                 j++;
