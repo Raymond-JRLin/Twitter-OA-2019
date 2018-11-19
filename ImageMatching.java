@@ -1,14 +1,12 @@
 public class ImageMatching {
     private static int countMatches(int[][] matrix1, int[][] matrix2) {
-        int n = matrix1.lnegth;
         int result = 0;
-        boolean[][] visited = new boolean[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                if (!visited[i][j] && matrix1[i][j] == 1) {
-                    List<Integer> regions1 = getRegionList(matrix1, n, i, j);
-                    List<Integer> regions2 = getRegionList(matrix2, n, i, j);
-                    if (isMatch(regions1, regions2, visited)) {
+        for (int i = 0; i < matrix1.length; i++) {
+            for (int j = 0; j < matrix1[i].length; j++) {
+                if (matrix1[i][j] == 1 && matrix2[i][j] == 1) {
+                    List<int[]> regions1 = getRegionList(matrix1, i, j);
+                    List<int[]> regions2 = getRegionList(matrix2, i, j);
+                    if (isMatch(regions1, regions2)) {
                         result++;
                     }
                 }
@@ -16,47 +14,44 @@ public class ImageMatching {
         }
         return result;
     }
-    private static List<Integer> getRegionList(int[][] matrix, int n, int row, int col) {
+    private static List<int[]> getRegionList(int[][] matrix, int row, int col) {
         int[] dx = new int[]{0, 0, 1, -1};
         int[] dy = new int[]{1, -1, 0, 0};
-        List<Integer> list = new ArrayList<>();
+        List<int[]> list = new ArrayList<>();
         Queue<int[]> queue = new LinkedList<>();
         queue.offer(new int[]{row, col});
-        boolean[][] visited = new boolean[n][n];
-        visited[row][col] = true;
+        matrix[row][col] = 0;
         while (!queue.isEmpty()) {
             int[] curr = queue.poll();
-            list.add(curr[0] * n + curr[1]);
+            list.add(new int[]{curr[0], curr[1]});
             for (int i = 0; i < 4; i++) {
                 int x = curr[0] + dx[i];
                 int y = curr[1] + dy[i];
-                if (x < 0 || x >= n || y < 0 || y >= n) {
-                    continue;
-                }
-                if (visited[x][y]) {
+                if (x < 0 || x >= matrix.length || y < 0 || y >= matrix[x].length) {
                     continue;
                 }
                 if (matrix[x][y] != 1) {
                     continue;
                 }
-                queue.offer(new int[]{x, y]});
-                visited[x][y] = true;
+                if (matrix[x][y] != 1) {
+                    continue;
+                }
+                queue.offer(new int[]{x, y});
+                matrix[x][y] = 0;
             }
         }
         return list;
     }
-    private static boolean isMatch(List<Integer> regions1, List<Integer> regions2, boolean[][] visited) {
-        boolean match = true;
+    private static boolean isMatch(List<int[]> regions1, List<int[]> regions2) {
         if (regions1.size() != regions2.size()) {
-            match = false;
+            return false;
         }
         for (int i = 0; i < regions1.size(); i++) {
-            if (regions1.get(i) != regions2.get(i)) {
-                match = false;
+            if (regions1.get(i)[0] != regions2.get(i)[0] || regions1.get(i)[1] != regions2.get(i)[1]) {
+                return false;
             }
-            visited[regions1.get(i)] = true;
         }
-        return match;
+        return true;
     }
 
     public static void main(String[] args) {
