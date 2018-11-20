@@ -33,9 +33,6 @@ public class ImageMatching {
                 if (matrix[x][y] != 1) {
                     continue;
                 }
-                if (matrix[x][y] != 1) {
-                    continue;
-                }
                 queue.offer(new int[]{x, y});
                 matrix[x][y] = 0;
             }
