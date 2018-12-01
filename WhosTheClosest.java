@@ -1,3 +1,86 @@
+import java.io.*;
+import java.math.*;
+import java.security.*;
+import java.text.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.function.*;
+import java.util.regex.*;
+import java.util.stream.*;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+
+
+
+class Result {
+
+    /*
+     * Complete the 'closest' function below.
+     *
+     * The function is expected to return an INTEGER_ARRAY.
+     * The function accepts following parameters:
+     *  1. STRING s
+     *  2. INTEGER_ARRAY queries
+     */
+
+    public static List<Integer> closest(String s, List<Integer> queries) {
+    // Write your code here
+        // use a HashMap to record the chars is s and their occurence positions
+        Map<Character, List<Integer>> map = new HashMap<>(); // <char, list of index>
+        int n = s.length();
+        for (int i = 0; i < n; i++) {
+            char c = s.charAt(i);
+            List<Integer> list = map.getOrDefault(c, new ArrayList<>());
+            list.add(i);
+            map.put(c, list);
+        }
+
+        List<Integer> result = new ArrayList<>();
+        for (int i = 0; i < queries.size(); i++) {
+            char c = s.charAt(queries.get(i)); // target char
+            // if c never occurs in s or only occurs once, then their is no such closest position
+            if (!map.containsKey(c) || map.get(c).size() == 1) {
+                result.add(-1);
+            } else {
+                // use binary search to find out the index of this position in c's position list
+                result.add(getIndex(map.get(c), queries.get(i)));
+            }
+        }
+        return result;
+    }
+    private static int getIndex(List<Integer> list, int target) {
+        int index = -1;
+        int start = 0;
+        int end = list.size();
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+            if (list.get(mid) == target) {
+                index = mid;
+                break;
+            } else if (list.get(mid) < target) {
+                start = mid + 1;
+            } else {
+                end = mid - 1;
+            }
+        }
+        // if this position is the 1st occurence of char c, then its next one is closest
+        if (index == 0) {
+            return list.get(index + 1);
+        } else if (index == list.size() - 1) {
+            // if this position is the last occurence of char c, then its previous one is closest
+            return list.get(index - 1);
+        }
+        // this position is in the middle, check its previous and next one to see which one is closer
+        if (list.get(index) - list.get(index - 1) <= list.get(index + 1) - list.get(index)) {
+            return list.get(index - 1);
+        } else {
+            return list.get(index + 1);
+        }
+    }
+}
+
+
+
 public class WhoIsTheClosest {
     private static int[] closest(String s, int[] queries) {
         int n = s.length();

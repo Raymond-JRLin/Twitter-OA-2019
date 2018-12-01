@@ -1,23 +1,24 @@
+import java.util.*;
+
 public class PrimeInSubtree {
-    private static int[] primeQuery(int n, int[] first, int[] second, int[] values, int[] queries) {
+    private static List<Integer> primeQuery(int n, List<Integer> first, List<Integer> second, List<Integer> values, List<Integer> queries) {
         // construct adjacent list
         List<List<Integer>> adj = new ArrayList<>();
         for (int i = 0; i <= n; i++) {
             // nodes start from 1, totally n nodes
             adj.add(new ArrayList<>());
         }
-        for (int i = 0; i < first.length; i++) {
-            adj.get(first[i]).add(second[i]);
-            adj.get(second[i]).add(first[i]);
+        for (int i = 0; i < first.size(); i++) {
+            adj.get(first.get(i)).add(second.get(i));
+            adj.get(second.get(i)).add(first.get(i));
         }
         // build the tree
         Map<Integer, List<Integer>> map = buildTree(n, adj);
         // query
-        int[] result = new int[queries.length];
-        for (int i = 0; i < queries.length; i++) {
-            int root = queries[i];
+        List<Integer> result = new ArrayList<>();
+        for (int root : queries) {
             // System.out.println("now check root as " + root);
-            result[i] = searchPrime(map, root, values);
+            result.add(searchPrime(map, root, values));
         }
         return result;
     }
@@ -42,14 +43,14 @@ public class PrimeInSubtree {
         }
         return map;
     }
-    private static int searchPrime(Map<Integer, List<Integer>> map, int root, int[] values) {
+    private static int searchPrime(Map<Integer, List<Integer>> map, int root, List<Integer> values) {
         int result = 0;
         Queue<Integer> queue = new LinkedList<>();
         queue.offer(root);
         while (!queue.isEmpty()) {
             int curr = queue.poll();
             // System.out.println("curr node is " + curr);
-            if (isPrime(values[curr - 1])) {
+            if (isPrime(values.get(curr - 1))) {
                 result++;
                 // System.out.println("corresponding value is " + values[curr - 1] + ", it's a prime");
             }
@@ -80,7 +81,7 @@ public class PrimeInSubtree {
         }
         return true;
     }
-    private static void printArray(int[] nums) {
+    private static void printArray(List<Integer> nums) {
         for (int num : nums) {
             System.out.print(num + " ");
         }
@@ -89,10 +90,10 @@ public class PrimeInSubtree {
 
     public static void main(String[] args) {
         int n = 10;
-        int[] first = new int[]{6, 8, 3, 6, 4, 1, 8, 5, 1};
-        int[] second = new int[]{9, 9, 5, 7, 8, 8, 10, 8, 2};
-        int[] values = new int[]{17, 29, 3, 20, 11, 8, 3, 23, 5, 15};
-        int[] queries = new int[]{1, 8, 9, 6, 4, 3};
+        List<Integer> first = Arrays.asList(6, 8, 3, 6, 4, 1, 8, 5, 1);
+        List<Integer> second = Arrays.asList(9, 9, 5, 7, 8, 8, 10, 8, 2);
+        List<Integer> values = Arrays.asList(17, 29, 3, 20, 11, 8, 3, 23, 5, 15);
+        List<Integer> queries = Arrays.asList(1, 8, 9, 6, 4, 3);
         printArray(primeQuery(n, first, second, values, queries));
         // 7, 5, 2, 1, 0, 1
     }
